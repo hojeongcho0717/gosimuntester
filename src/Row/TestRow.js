@@ -65,16 +65,21 @@ const useStyles = makeStyles({
 	});
  
 
-export const TestRow = ({title, color, realTime, fileIndex, ...props}) => {
+export const TestRow = ({title, color, realTime, fileIndex, hide, ...props}) => {
 		const classes = useStyles();
 		const [notValid, setNotValid] = useState(false);
+		const [titleNotValid, setTitleNotValid] = useState(false);
 		const [textValue, setTextValue] = useState('');
+		const [titleValue, setTitleValue] = useState('');
 		const [paper, setPaper] = useState('');
 		const [original, setOriginal] = useState('');
 		const inputRef = useRef();
+		const titleRef = useRef();
 		const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
 		const debounceSet = useDebounce(textValue, 500);
+		const debounceSetTitle = useDebounce(titleValue, 500);
 		const [marked, setMarked] = useState('not_yet');
+		const [titleMarked, setTitleMarked] = useState('not_yet');
 		const preRealTime = usePrevious(realTime);
 		const checkValidation = useCallback(() => {
 			const result = textValue.replace(/(\n|\r\n)/g, '**');
@@ -83,16 +88,29 @@ export const TestRow = ({title, color, realTime, fileIndex, ...props}) => {
 			} else {
 				setNotValid(false);
 			}
-		}, [paper, textValue])
+		}, [paper, textValue]);
+
+		const checkTitleValidation = useCallback(() => {
+			const result = titleValue;
+			if (title !== result && result) {
+				console.log('check')
+				setTitleNotValid(true);
+			} else {
+				setTitleNotValid(false);
+			}
+		}, [title, titleValue]);
 
 		useEffect(() => {
 			if (preRealTime && !realTime) {
 				setMarked('not_yet');
+				setTitleMarked('not_yet');
 				setNotValid(false);
+				setTitleNotValid(false);
 			} else if (!preRealTime && realTime){
 				checkValidation();
+				checkTitleValidation();
 			}
-		}, [checkValidation, preRealTime, realTime]);
+		}, [checkTitleValidation, checkValidation, preRealTime, realTime]);
 
 		useEffect(() => {
 			if (debounceSet) {
@@ -100,6 +118,13 @@ export const TestRow = ({title, color, realTime, fileIndex, ...props}) => {
 			}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, [debounceSet])
+
+		useEffect(() => {
+			if (debounceSetTitle) {
+				checkTitleValidation();
+			}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, [debounceSetTitle])
 
 			
 		useEffect(() => {
@@ -109,13 +134,24 @@ export const TestRow = ({title, color, realTime, fileIndex, ...props}) => {
 				if (rawFile.readyState === 4) {
 					if (rawFile.status === 200 || rawFile.status === 0) {
 						const allText = rawFile.responseText;
-						setOriginal(allText.replace(/(\n|\r\n)/g, '<br>'));
+						setOriginal(hide ? `소제목: ${title}<br><br>${allText.replace(/(\n|\r\n)/g, '<br>')}` : `${allText.replace(/(\n|\r\n)/g, '<br>')}`);
 						setPaper(allText.replace(/(\n|\r\n)/g, '**'));
 					}
 				}
 			};
 			rawFile.send(null);
-		}, [fileIndex]);
+		}, [fileIndex, hide, title]);
+
+		const titleChange = useCallback((ev) => {
+			if (realTime) {
+				setTitleValue(ev.target.value);
+				if (ev.target.value === '') {
+					setTitleNotValid(false);
+				}
+			} else {
+				setTitleMarked('not_yet');
+			}
+		}, [realTime]);
 
 		const handleChange = useCallback((ev) => {
 			if (realTime) {
@@ -131,13 +167,19 @@ export const TestRow = ({title, color, realTime, fileIndex, ...props}) => {
 		const markHandler = useCallback(() => {
 			if (!realTime) {
 				const wholeText = inputRef.current.children[1].children[0].value.replace(/(\n|\r\n)/g, '**');
+				const titleText = titleRef.current.children[1].children[0].value;
 				if (wholeText !== paper) {
 					setMarked('fail');
 				} else {
 					setMarked('pass');
 				}
+				if (title !== titleText) {
+					setTitleMarked('fail');
+				} else {
+					setTitleMarked('pass');
+				}
 			}
-		}, [paper, realTime]);
+		}, [paper, realTime, title]);
 
 		const getMarkedText = useCallback(() => {
 			if (marked === 'not_yet') {
@@ -148,6 +190,16 @@ export const TestRow = ({title, color, realTime, fileIndex, ...props}) => {
 				return '오답';
 			}
 		}, [marked]);
+
+		const getMarkedTitle = useCallback(() => {
+			if (titleMarked === 'not_yet') {
+				return '';
+			} else if (titleMarked === 'pass') {
+				return '정답';
+			} else {
+				return '오답';
+			}
+		}, [titleMarked]);
 		
 		const showAnswer = useCallback((ev) => {
 			if (showCorrectAnswer === false) {
@@ -164,7 +216,24 @@ export const TestRow = ({title, color, realTime, fileIndex, ...props}) => {
 		return (
 			<>
 				<TableRow>
-					<TableCell align="left" style={{color: color, fontSize: '24px', width: '400px'}} size={'small'}>{title}</TableCell>
+					<>
+						{hide ? 
+						<TableCell size={'medium'}>
+							<TextField
+								error={titleNotValid}
+								onChange={titleChange}
+								label={'소제목'}
+								ref={titleRef}
+								placeholder={'소제목'}
+								variant="outlined"
+								{...props}
+							/>
+							{!realTime && <span className={titleMarked === 'pass' ? classes.pass : classes.fail}>{getMarkedTitle()}</span>}
+						</TableCell>
+							 :
+							<TableCell align="left" style={{color: color, fontSize: '24px', width: '400px'}} size={'small'}>{title}</TableCell>
+						}
+					</>
 					<TableCell size={'medium'}>
 						<TextField
 								error={notValid}
