@@ -167,19 +167,22 @@ export const TestRow = ({title, color, realTime, fileIndex, hide, ...props}) => 
 		const markHandler = useCallback(() => {
 			if (!realTime) {
 				const wholeText = inputRef.current.children[1].children[0].value.replace(/(\n|\r\n)/g, '**');
-				const titleText = titleRef.current.children[1].children[0].value;
+				
 				if (wholeText !== paper) {
 					setMarked('fail');
 				} else {
 					setMarked('pass');
 				}
-				if (title !== titleText) {
-					setTitleMarked('fail');
-				} else {
-					setTitleMarked('pass');
+				if (hide) {
+					const titleText = titleRef.current.children[1].children[0].value;
+					if (title !== titleText) {
+						setTitleMarked('fail');
+					} else {
+						setTitleMarked('pass');
+					}
 				}
 			}
-		}, [paper, realTime, title]);
+		}, [hide, paper, realTime, title]);
 
 		const getMarkedText = useCallback(() => {
 			if (marked === 'not_yet') {
