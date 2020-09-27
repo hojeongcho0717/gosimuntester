@@ -259,7 +259,7 @@ export const TestRow = ({title, color, realTime, fileIndex, hide, ...props}) => 
 				<Dialog onClose={closeDialog} aria-labelledby="customized-dialog-title" open={showCorrectAnswer} maxWidth={'lg'}>
 					<Typography gutterBottom>
 						<div dangerouslySetInnerHTML={{__html: original}} /> 
-          </Typography>
+        			</Typography>
 				</Dialog>
 			</>
 		);
