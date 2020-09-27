@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect, useRef} from 'react';
 import { TableRow, TableCell, Button, TextField, Typography, Dialog } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-const files = new Array(28);
+const files = new Array(14);
 
 for (let i = 0; i < files.length; i++) {
 	files[i] = (require(`../assets/${i+1}.txt`));
@@ -36,12 +36,12 @@ function usePrevious(value) {
   // The ref object is a generic container whose current property is mutable ...
   // ... and can hold any value, similar to an instance property on a class
   const ref = useRef();
-  
+
   // Store current value in ref
   useEffect(() => {
     ref.current = value;
   }, [value]); // Only re-run if value changes
-  
+
   // Return previous value (happens before update in useEffect above)
   return ref.current;
 }
@@ -63,7 +63,7 @@ const useStyles = makeStyles({
 			marginLeft: '40px'
 		}
 	});
- 
+
 
 export const TestRow = ({title, color, realTime, fileIndex, hide, ...props}) => {
 		const classes = useStyles();
@@ -126,7 +126,7 @@ export const TestRow = ({title, color, realTime, fileIndex, hide, ...props}) => 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, [debounceSetTitle])
 
-			
+
 		useEffect(() => {
 			var rawFile = new XMLHttpRequest();
 			rawFile.open("GET", files[fileIndex], false);
@@ -167,7 +167,7 @@ export const TestRow = ({title, color, realTime, fileIndex, hide, ...props}) => 
 		const markHandler = useCallback(() => {
 			if (!realTime) {
 				const wholeText = inputRef.current.children[1].children[0].value.replace(/(\n|\r\n)/g, '**');
-				
+
 				if (wholeText !== paper) {
 					setMarked('fail');
 				} else {
@@ -203,7 +203,7 @@ export const TestRow = ({title, color, realTime, fileIndex, hide, ...props}) => 
 				return '오답';
 			}
 		}, [titleMarked]);
-		
+
 		const showAnswer = useCallback((ev) => {
 			if (showCorrectAnswer === false) {
 				setShowCorrectAnswer(true);
@@ -220,7 +220,7 @@ export const TestRow = ({title, color, realTime, fileIndex, hide, ...props}) => 
 			<>
 				<TableRow>
 					<>
-						{hide ? 
+						{hide ?
 						<TableCell size={'medium'}>
 							<TextField
 								error={titleNotValid}
@@ -258,7 +258,7 @@ export const TestRow = ({title, color, realTime, fileIndex, hide, ...props}) => 
 				</TableRow>
 				<Dialog onClose={closeDialog} aria-labelledby="customized-dialog-title" open={showCorrectAnswer} maxWidth={'lg'}>
 					<Typography gutterBottom>
-						<div dangerouslySetInnerHTML={{__html: original}} /> 
+						<div dangerouslySetInnerHTML={{__html: original}} />
         			</Typography>
 				</Dialog>
 			</>
