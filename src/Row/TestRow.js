@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect, useRef} from 'react';
 import { TableRow, TableCell, Button, TextField, Typography, Dialog } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-const files = new Array(15);
+const files = new Array(23);
 
 for (let i = 0; i < files.length; i++) {
 	files[i] = (require(`../assets/${i+1}.txt`));
