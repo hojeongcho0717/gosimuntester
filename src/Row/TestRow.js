@@ -36,12 +36,12 @@ function usePrevious(value) {
   // The ref object is a generic container whose current property is mutable ...
   // ... and can hold any value, similar to an instance property on a class
   const ref = useRef();
-  
+
   // Store current value in ref
   useEffect(() => {
     ref.current = value;
   }, [value]); // Only re-run if value changes
-  
+
   // Return previous value (happens before update in useEffect above)
   return ref.current;
 }
@@ -63,7 +63,7 @@ const useStyles = makeStyles({
 			marginLeft: '40px'
 		}
 	});
- 
+
 
 export const TestRow = ({title, color, realTime, fileIndex, hide, ...props}) => {
 		const classes = useStyles();
@@ -126,7 +126,7 @@ export const TestRow = ({title, color, realTime, fileIndex, hide, ...props}) => 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, [debounceSetTitle])
 
-			
+
 		useEffect(() => {
 			var rawFile = new XMLHttpRequest();
 			rawFile.open("GET", files[fileIndex], false);
@@ -135,7 +135,8 @@ export const TestRow = ({title, color, realTime, fileIndex, hide, ...props}) => 
 					if (rawFile.status === 200 || rawFile.status === 0) {
 						const allText = rawFile.responseText;
 						setOriginal(hide ? `소제목: ${title}<br><br>${allText.replace(/(\n|\r\n)/g, '<br>')}` : `${allText.replace(/(\n|\r\n)/g, '<br>')}`);
-						setPaper(allText.replace(/(\n|\r\n)/g, '**'));
+						const txt = allText.replace(/(\n|\r\n)/g, '**').replace(/(가. |나. |다. |라. |마. |바. |사. )/g, '');
+						setPaper(txt);
 					}
 				}
 			};
@@ -167,7 +168,7 @@ export const TestRow = ({title, color, realTime, fileIndex, hide, ...props}) => 
 		const markHandler = useCallback(() => {
 			if (!realTime) {
 				const wholeText = inputRef.current.children[1].children[0].value.replace(/(\n|\r\n)/g, '**');
-				
+
 				if (wholeText !== paper) {
 					setMarked('fail');
 				} else {
@@ -203,7 +204,7 @@ export const TestRow = ({title, color, realTime, fileIndex, hide, ...props}) => 
 				return '오답';
 			}
 		}, [titleMarked]);
-		
+
 		const showAnswer = useCallback((ev) => {
 			if (showCorrectAnswer === false) {
 				setShowCorrectAnswer(true);
@@ -220,7 +221,7 @@ export const TestRow = ({title, color, realTime, fileIndex, hide, ...props}) => 
 			<>
 				<TableRow>
 					<>
-						{hide ? 
+						{hide ?
 						<TableCell size={'medium'}>
 							<TextField
 								error={titleNotValid}
@@ -258,7 +259,7 @@ export const TestRow = ({title, color, realTime, fileIndex, hide, ...props}) => 
 				</TableRow>
 				<Dialog onClose={closeDialog} aria-labelledby="customized-dialog-title" open={showCorrectAnswer} maxWidth={'lg'}>
 					<Typography gutterBottom>
-						<div dangerouslySetInnerHTML={{__html: original}} /> 
+						<div dangerouslySetInnerHTML={{__html: original}} />
           </Typography>
 				</Dialog>
 			</>
