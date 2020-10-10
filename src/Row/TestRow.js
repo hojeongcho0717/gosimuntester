@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect, useRef} from 'react';
 import { TableRow, TableCell, Button, TextField, Typography, Dialog } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-const files = new Array(15);
+const files = new Array(20);
 
 for (let i = 0; i < files.length; i++) {
 	files[i] = (require(`../assets/${i+1}.txt`));
@@ -135,7 +135,8 @@ export const TestRow = ({title, color, realTime, fileIndex, hide, ...props}) => 
 					if (rawFile.status === 200 || rawFile.status === 0) {
 						const allText = rawFile.responseText;
 						setOriginal(hide ? `소제목: ${title}<br><br>${allText.replace(/(\n|\r\n)/g, '<br>')}` : `${allText.replace(/(\n|\r\n)/g, '<br>')}`);
-						setPaper(allText.replace(/(\n|\r\n)/g, '**'));
+						const txt = allText.replace(/(\n|\r\n)/g, '**').replace(/·/g, ' ');
+						setPaper(txt);
 					}
 				}
 			};
