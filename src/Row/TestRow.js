@@ -135,7 +135,7 @@ export const TestRow = ({title, color, realTime, fileIndex, hide, ...props}) => 
 					if (rawFile.status === 200 || rawFile.status === 0) {
 						const allText = rawFile.responseText;
 						setOriginal(hide ? `소제목: ${title}<br><br>${allText.replace(/(\n|\r\n)/g, '<br>')}` : `${allText.replace(/(\n|\r\n)/g, '<br>')}`);
-						const txt = allText.replace(/(\n|\r\n)/g, '**').replace(/(가\. |나\. |다\. |라\. |마\. |바\. |사\. )/g, '');
+						const txt = allText.replace(/(\n|\r\n)/g, '**').replace(/(가\. |나\. |다\. |라\. |마\. |바\. |사\. |아\. )/g, '');
 						console.log(txt);
 						setPaper(txt);
 					}
