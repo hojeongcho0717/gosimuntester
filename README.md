@@ -37,6 +37,10 @@
 
 
 ## 다운로드 경로
+클릭 후 화면 오른쪽 위의 버튼을 눌러주세요
+![image](https://user-images.githubusercontent.com/67372648/175809274-93bdbbcc-ddd0-4aea-af85-ad6174b9fa0e.png)
+
+
 | 항목 | 경로 |
 | ------ | ------ |
 | 누리과정 총론 | [다운로드 - 구글드라이브](https://drive.google.com/file/d/1fiUCipCe_turv0TWb3nPZKO1aLE_M9sG/view?usp=sharing) |
